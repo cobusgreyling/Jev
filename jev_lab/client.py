@@ -24,6 +24,8 @@ class TypeSafeError(RuntimeError):
 
 
 def load_api_key() -> str:
+    if os.getenv("TYPESAFE_OFFLINE", "").strip().lower() in {"1", "true", "yes"}:
+        return ""
     env = os.getenv("TYPESAFE_API_KEY", "").strip()
     if env:
         return env

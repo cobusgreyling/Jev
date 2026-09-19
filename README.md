@@ -69,7 +69,7 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Open **http://127.0.0.1:7872** → start on **What people miss** and **Playground**.
+Open **http://127.0.0.1:7872/home** for the smart-home demo (TypeSafe’s fan-out house), or **http://127.0.0.1:7872** for the operator lab.
 
 ### Harness CLI (TypeScript)
 
@@ -112,8 +112,9 @@ The key is never logged, never returned by `/api/health`, and never committed. S
 
 ## What the lab shows
 
-| Tab | Offline? | What you learn |
-|-----|----------|----------------|
+| Surface | Offline? | What you learn |
+|---------|----------|----------------|
+| **[Smart home](/home)** | Yes (mock) | Official-style house: 13 questions in one call, code flips the lights |
 | **What people miss** | Yes | 10 ranked operator cards with actions + doc links |
 | **Playground** | Yes | Choice + Score + Noul, then a policy in code |
 | **Cost lab** | Yes | Input-only billing, fan-out vs serial, LLM stand-in |
@@ -185,14 +186,14 @@ make secret-scan
 ## Repository map
 
 ```text
-├── app.py / static/          Interactive lab
-├── jev_lab/                  HTTP client, cost, policy (code owns this)
+├── app.py / static/          Operator lab + /home smart-home demo
+├── jev_lab/                  HTTP client, cost, policy, house dispatcher
 ├── packages/js/              TypeScript harness CLI (@cobusgreyling/jev)
 ├── FRAMEWORK.md              The eight-layer showcase skeleton
 ├── BLOG.md                   Narrative article
 ├── examples/01–07            Progressive scripts
 ├── data/                     model-card, claims, fixtures
-├── docs/                     Operator notes + sources
+├── docs/                     Operator notes + smart-home + sources
 ├── skills/jev/               Agent skill
 ├── tests/                    pytest
 └── SECURITY.md               Key hygiene
@@ -223,6 +224,7 @@ This is **not** an official TypeSafe product. It does **not** replace `typesafe-
 | Topic | Link |
 |-------|------|
 | What people miss | [docs/WHAT-PEOPLE-MISS.md](docs/WHAT-PEOPLE-MISS.md) |
+| Smart home demo | [docs/smart-home.md](docs/smart-home.md) |
 | Anti-patterns | [docs/anti-patterns.md](docs/anti-patterns.md) |
 | Sources | [docs/sources.md](docs/sources.md) |
 | Official jaggedness | [Jev 1.13](https://docs.typesafe.ai/model-jaggedness/jev-1.13) |

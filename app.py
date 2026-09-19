@@ -23,6 +23,22 @@ from pydantic import BaseModel, Field
 
 from jev_lab.client import TypeSafeError, load_api_key, system_one
 from jev_lab.cost import estimate_cost, fanout_comparison
+from jev_lab.home import (
+    EXAMPLES,
+    HOMES,
+    apply_plan,
+    build_questions,
+    build_state,
+    clone_home,
+    general_reply,
+    homes_catalog,
+    mock_answers,
+    overlay_house,
+    plan,
+    public_home,
+    split_request,
+    trace_rows,
+)
 from jev_lab.policy import ticket_policy
 
 ROOT = Path(__file__).resolve().parent
@@ -86,6 +102,7 @@ def health() -> dict[str, Any]:
             "scenarios": True,
             "model_card": True,
             "live_judge": bool(load_api_key()),
+            "smart_home": True,
         },
     }
 
@@ -206,9 +223,110 @@ def judge(req: JudgeRequest) -> dict[str, Any]:
     }
 
 
+class HomeRun(BaseModel):
+    request: str = Field(..., min_length=1, max_length=2000)
+    home_id: str = "1br"
+    speaking_to: str | None = None
+    house: dict[str, Any] | None = None
+    force: bool = False
+
+
+class HomeApply(BaseModel):
+    home_id: str = "1br"
+    house: dict[str, Any]
+    plan: dict[str, Any]
+    force: bool = True
+
+
+class HomeSplit(BaseModel):
+    request: str = Field(..., min_length=1, max_length=2000)
+
+
+def _home_or_404(home_id: str) -> dict[str, Any]:
+    if home_id not in HOMES:
+        raise HTTPException(404, f"Unknown home: {home_id}")
+    return clone_home(home_id)
+
+
+@app.get("/api/home/bootstrap")
+def home_bootstrap() -> dict[str, Any]:
+    return {
+        "homes": homes_catalog(),
+        "examples": EXAMPLES,
+        "live": bool(load_api_key()),
+        "houses": {key: public_home(clone_home(key)) for key in HOMES},
+    }
+
+
+@app.post("/api/home/run")
+def home_run(req: HomeRun) -> dict[str, Any]:
+    home = overlay_house(_home_or_404(req.home_id), req.house)
+    questions = build_questions(home)
+    state = build_state(req.request, home, req.speaking_to)
+    source = "mock"
+    model = "mock"
+    usage: dict[str, Any] = {}
+    t0 = time.perf_counter()
+    answers: dict[str, Any]
+    if load_api_key():
+        try:
+            data = system_one(
+                state,
+                questions,
+                model=TYPESAFE_MODEL,
+                base_url=TYPESAFE_BASE_URL,
+            )
+            answers = data.get("answers") or {}
+            source = "live"
+            model = data.get("model") or TYPESAFE_MODEL
+            usage = data.get("usage") or {}
+        except TypeSafeError:
+            answers = mock_answers(req.request, home, req.speaking_to, questions)
+            source = "mock_fallback"
+    else:
+        answers = mock_answers(req.request, home, req.speaking_to, questions)
+    latency_ms = round((time.perf_counter() - t0) * 1000)
+    planned = plan(answers, home, req.speaking_to)
+    result = None
+    reply = None
+    if planned["kind"] == "general":
+        reply = general_reply(req.request)
+    elif planned["kind"] in {"command", "status", "unavailable"}:
+        result = apply_plan(home, planned, force=req.force)
+    return {
+        "source": source,
+        "model": model,
+        "latency_ms": latency_ms,
+        "usage": usage,
+        "plan": planned,
+        "trace": trace_rows(questions, answers, planned.get("used") or []),
+        "result": result,
+        "reply": reply,
+        "house": public_home(home),
+        "question_count": len(questions),
+    }
+
+
+@app.post("/api/home/apply")
+def home_apply(req: HomeApply) -> dict[str, Any]:
+    home = overlay_house(_home_or_404(req.home_id), req.house)
+    result = apply_plan(home, req.plan, force=req.force)
+    return {"result": result, "house": public_home(home)}
+
+
+@app.post("/api/home/split")
+def home_split(req: HomeSplit) -> dict[str, Any]:
+    return {"commands": split_request(req.request), "via": "heuristic"}
+
+
 @app.get("/")
 def index() -> FileResponse:
     return FileResponse(STATIC_DIR / "index.html")
+
+
+@app.get("/home")
+def smart_home_page() -> FileResponse:
+    return FileResponse(STATIC_DIR / "home.html")
 
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")

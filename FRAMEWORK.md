@@ -16,6 +16,7 @@ Clone, `./run.sh`, browser. No key required.
 
 | Surface | Offline? | Job |
 |---------|----------|-----|
+| Smart home (`/home`) | Yes (mock) | TypeSafe-style house: fan-out, device grid, decision trace |
 | What people miss | Yes | Ranked operator cards from official docs |
 | Playground | Yes (fixtures) | Choice + Score + Noul over one state |
 | Cost lab | Yes | Input-only billing, fan-out vs serial |

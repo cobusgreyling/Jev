@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Smart Home · Jev</title>
+  <meta name="description" content="TypeSafe Jev smart-home demo: speculative fan-out of Choice, Score, and Noul questions, then code turns the lights on." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/home.css" />
+</head>
+<body>
+  <header>
+    <form id="form">
+      <input id="prompt" placeholder='Try: "Turn on the living room lights"' autocomplete="off" />
+      <select id="ctx" title="Which device the user is speaking to"></select>
+      <button class="primary" id="send" type="submit">Send</button>
+    </form>
+    <div class="chips" id="chips"></div>
+  </header>
+  <main>
+    <section id="home">
+      <div class="bar">
+        <h2>Smart Home</h2>
+        <select id="homeSel"></select>
+        <button id="reset" type="button">Reset</button>
+      </div>
+      <div id="rooms"></div>
+    </section>
+    <section id="trace">
+      <div class="head">
+        <h2>Decision Trace</h2>
+        <p class="q" id="traceQ">Submit a request to see the decision trace</p>
+        <div class="timing" id="timing"></div>
+      </div>
+      <div id="log">
+        <div class="empty">
+          One request fans out into every question the dispatcher might need.<br />
+          Code reads only the answers that apply; the rest stay dim.
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer>
+    Unofficial recreation of
+    <a href="https://docs.typesafe.ai/demos/smart-home" target="_blank" rel="noopener">TypeSafe’s smart-home demo</a>
+    · <a href="/">Operator lab</a>
+    · <a href="https://github.com/cobusgreyling/Jev">GitHub</a>
+    · <span id="modeBadge">checking…</span>
+  </footer>
+  <script src="/static/home.js"></script>
+</body>
+</html>

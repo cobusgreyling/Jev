@@ -15,6 +15,8 @@ All operator claims in this showcase should trace to one of these.
 | Jev 1.13 jaggedness | https://docs.typesafe.ai/model-jaggedness/jev-1.13 |
 | Parallel questions cookbook | https://docs.typesafe.ai/cookbooks/parallel_questions |
 | Agent skill | https://docs.typesafe.ai/agent-skill |
+| Smart home demo | https://docs.typesafe.ai/demos/smart-home |
+| Demo walkthrough | https://www.loom.com/share/18c4dbcf8db546dfb2d7f2ef018e78e4 |
 | Workflow evals | https://evals.typesafe.ai/ |
 | Python SDK | https://github.com/typesafe-ai/typesafe-sdk-python |
 | Console / keys | https://console.typesafe.ai/ |
