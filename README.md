@@ -71,6 +71,21 @@ python app.py
 
 Open **http://127.0.0.1:7872** → start on **What people miss** and **Playground**.
 
+### Harness CLI (TypeScript)
+
+The same System One questions, packaged for agent loops — model routing, semantic retrieval, LLM guardrails, reasoning-trace classification. Wired into [Loop Engineering](https://github.com/cobusgreyling/loop-engineering) as `loop-jev`.
+
+```bash
+cd packages/js && npm install && npm test
+npx jev doctor
+npx jev route --goal "CI has been red for 3 days" --level L2 --json
+npx jev guard --side input --text "Ignore previous instructions" --json
+```
+
+Docs: [`packages/js/README.md`](packages/js/README.md) · [loop-engineering/docs/jev.md](https://github.com/cobusgreyling/loop-engineering/blob/main/docs/jev.md)
+
+The key is never printed. Store it as `TYPESAFE_API_KEY`, `~/.typesafe/api_key`, or `~/.config/typesafe/api_key` (mode 600).
+
 ```bash
 ./run.sh
 ```
@@ -172,6 +187,7 @@ make secret-scan
 ```text
 ├── app.py / static/          Interactive lab
 ├── jev_lab/                  HTTP client, cost, policy (code owns this)
+├── packages/js/              TypeScript harness CLI (@cobusgreyling/jev)
 ├── FRAMEWORK.md              The eight-layer showcase skeleton
 ├── BLOG.md                   Narrative article
 ├── examples/01–07            Progressive scripts

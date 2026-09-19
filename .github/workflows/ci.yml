@@ -16,3 +16,22 @@ jobs:
       - run: pip install -r requirements.txt
       - run: python scripts/secret_scan.py
       - run: python -m pytest -q
+
+  js:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/js
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: packages/js/package-lock.json
+      - run: npm ci
+      - run: npm test
+        env:
+          TYPESAFE_API_KEY: ""
+          JEV_API_KEY: ""
+          TYPESAFE_KEY_FILE: /tmp/jev-ci-missing-key
