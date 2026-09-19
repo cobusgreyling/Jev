@@ -1,0 +1,36 @@
+{
+  "title": "Tracked claims",
+  "source_note": "Vendor-published. Verify against docs before repeating as fact.",
+  "items": [
+    {
+      "claim": "70–500 ms end-to-end",
+      "where": "TypeSafe announcement",
+      "nuance": "Published evals generally run from West Coast laptops, where the service is based."
+    },
+    {
+      "claim": "$0.042 / MTok input; output free",
+      "where": "docs.typesafe.ai/models",
+      "nuance": "Early-access pricing; sustainability is a long-term claim."
+    },
+    {
+      "claim": "0% type / schema errors",
+      "where": "Announcement",
+      "nuance": "By construction, not empirical. A single counter-example would falsify it."
+    },
+    {
+      "claim": "Up to ~194× faster / ~445× cheaper on workflow evals",
+      "where": "evals.typesafe.ai and homepage",
+      "nuance": "Vendor says these are on the higher end of real-world gains. Reference answers are averages of GPT-6 Astra and Fable 5.1."
+    },
+    {
+      "claim": "Choice cardinality up to 255",
+      "where": "Announcement / Wikiracing nuance",
+      "nuance": "Higher cardinality uses a two-stage score-then-choose system."
+    },
+    {
+      "claim": "Cannot hallucinate",
+      "where": "Announcement",
+      "nuance": "Cannot invent a label off the schema. Can still be wrong, literal, or steered by adversarial state."
+    }
+  ]
+}

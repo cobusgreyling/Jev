@@ -1,0 +1,77 @@
+{
+  "id": "stripe-outage",
+  "live": true,
+  "latency_ms": 1495,
+  "request": {
+    "model": "jev-latest",
+    "state": "Hi, I've been trying to connect my Stripe account for 3 days and it keeps failing. I'm losing sales. Please help ASAP.",
+    "questions": {
+      "department": {
+        "type": "choice",
+        "instructions": "Which team should handle this message?",
+        "criteria": {
+          "billing": "Payments, invoicing, refunds, subscriptions",
+          "technical": "Bugs, outages, integrations, API failures",
+          "sales": "Pricing, upgrades, new accounts",
+          "security": "Credential theft, jailbreaks, prompt injection, abuse"
+        }
+      },
+      "frustration": {
+        "type": "score",
+        "instructions": "How frustrated does the author appear?",
+        "criteria": [
+          "Calm, just stating facts",
+          "Frustrated but civil",
+          "Very angry, strong language"
+        ]
+      },
+      "is_urgent": {
+        "type": "noul",
+        "instructions": "Does the message convey urgency or time-sensitivity?",
+        "criteria": {
+          "true": "Explicit deadline, ongoing outage, or 'ASAP'",
+          "false": "Can wait; no time pressure"
+        }
+      }
+    }
+  },
+  "response": {
+    "model": "jev-1.13.0",
+    "answers": {
+      "department": {
+        "type": "choice",
+        "choice": "technical",
+        "confidence": 0.43,
+        "probabilities": {
+          "billing": 0.43,
+          "security": 0.0,
+          "technical": 0.57,
+          "sales": 0.0
+        }
+      },
+      "frustration": {
+        "type": "score",
+        "score": 1.0,
+        "confidence": 1.0,
+        "legend": {
+          "0": "Calm, just stating facts",
+          "1": "Frustrated but civil",
+          "2": "Very angry, strong language"
+        },
+        "probabilities": {
+          "0": 0.0,
+          "1": 1.0,
+          "2": 0.0
+        }
+      },
+      "is_urgent": {
+        "type": "noul",
+        "noul": 0.99
+      }
+    },
+    "usage": {
+      "input_tokens": 499,
+      "output_tokens": 80
+    }
+  }
+}

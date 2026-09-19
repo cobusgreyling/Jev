@@ -1,0 +1,71 @@
+{
+  "name": "Jev",
+  "model_id": "jev-1.13.0",
+  "alias": "jev-latest",
+  "preview_alias": "jev-preview",
+  "org": "TypeSafe AI",
+  "class": "System One",
+  "released": "2026-09-15",
+  "tagline": "Frontier-intelligence function call: unstructured state in, typed probabilistic decisions out",
+  "context_window": 64000,
+  "state_plus_longest_question": 32000,
+  "knowledge": "Common-sense judgment; not a knowledge-cutoff chat model",
+  "modalities": {
+    "input": ["text", "json object", "json array"],
+    "output": ["typed Choice", "typed Score", "typed Noul"],
+    "not_supported": ["image", "audio", "video", "generated prose"]
+  },
+  "pricing": {
+    "input_per_mtok_usd": 0.042,
+    "input_per_btok_usd": 42.0,
+    "output_per_mtok_usd": 0.0,
+    "note": "Charged per input token. Output tokens are free."
+  },
+  "rate_limits": {
+    "tokens_per_second": 250000,
+    "requests_per_minute": 1200,
+    "note": "Limits can change without notice during early access."
+  },
+  "latency_ms": { "typical_low": 70, "typical_high": 500 },
+  "training": {
+    "method": "RLCD — Reinforcement Learning for Calibrated Decisions",
+    "fine_tune": false,
+    "customer_data": false,
+    "note": "Same weights for every account. Shape answers via state, instructions, and criteria."
+  },
+  "primitives": ["choice", "score", "noul"],
+  "choice_cardinality_max": 255,
+  "language": {
+    "primary": "English",
+    "other": "Handled but not equally well; test and watch confidence."
+  },
+  "operator_gotchas": [
+    "Jev does not generate text, code, or explanations",
+    "Question IDs are for your code; they are not sent to the model",
+    "Noul has no separate confidence field — the probability is the signal",
+    "Questions in one request are independent; dependencies need a second call",
+    "Do not count, do arithmetic, or compare dates in the model — keep that in code",
+    "Accuracy falls as unrelated state grows (context rot)",
+    "Cannot LoRA / fine-tune; customize through the request",
+    "Pin jev-1.13.0 if you have tuned thresholds against that version"
+  ],
+  "endpoint": "POST https://api.typesafe.ai/v1/systemone",
+  "sdks": ["typesafe-sdk (Python)", "@typesafe-ai/sdk (JavaScript)"],
+  "where_it_runs": [
+    {"name": "TypeSafe API", "url": "https://console.typesafe.ai"},
+    {"name": "Playground", "url": "https://console.typesafe.ai/playground"},
+    {"name": "Python SDK", "url": "https://github.com/typesafe-ai/typesafe-sdk-python"},
+    {"name": "Agent skill", "url": "https://github.com/typesafe-ai/skills"},
+    {"name": "Pydantic AI", "url": "https://ai.pydantic.dev/api/models/typesafe/"}
+  ],
+  "links": {
+    "announcement": "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+    "docs": "https://docs.typesafe.ai/",
+    "models": "https://docs.typesafe.ai/models",
+    "api": "https://docs.typesafe.ai/api",
+    "console": "https://console.typesafe.ai",
+    "evals": "https://evals.typesafe.ai/",
+    "jaggedness": "https://docs.typesafe.ai/model-jaggedness/jev-1.13"
+  },
+  "disclaimer": "Unofficial community showcase. Specs from TypeSafe docs and the 15 Sep 2026 announcement. Not affiliated with TypeSafe AI."
+}

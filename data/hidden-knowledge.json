@@ -1,0 +1,135 @@
+{
+  "title": "What most launch posts skip",
+  "subtitle": "Operator-level details from TypeSafe docs that change how you build — not the latency screenshot.",
+  "source_note": "Grounded in docs.typesafe.ai (models, primitives, confidence, jaggedness, how-to-build) and the 15 Sep 2026 System One announcement.",
+  "items": [
+    {
+      "id": "not-a-chatbot",
+      "rank": 1,
+      "badge": "Interface",
+      "title": "Jev is a function call, not a chatbot",
+      "summary": "Unstructured state in, typed probabilistic decisions out. It cannot write prose, code, or explanations. Pair it with a generative model when you need language.",
+      "detail": "System One models give up string generation on purpose. The output space is the schema you sent. There is nothing to parse, so there is nothing to hallucinate off-schema. If you find yourself chaining Choices to spell words, stop — that is a generative job.",
+      "action": "Keep control flow in code. Call Jev only where a knowledgeable person would make a snap judgment.",
+      "docs": [
+        "https://typesafe.ai/blog/introducing-system-one-models-and-jev",
+        "https://docs.typesafe.ai/concepts/system-one"
+      ]
+    },
+    {
+      "id": "three-primitives",
+      "rank": 2,
+      "badge": "API",
+      "title": "Everything is Choice, Score, or Noul",
+      "summary": "Choice picks one option (up to 255) with a full distribution. Score sits on an ordered rubric and can land between levels. Noul is P(yes) from 0 to 1 — and has no separate confidence field.",
+      "detail": "Question IDs are for your code; they are not sent to the model. Write the complete question in instructions even when the ID seems obvious. Mix types freely in one request. A Noul of 0.5 is uncertainty, not a medium score — use Score when you need a spectrum.",
+      "action": "Pick the type whose answer your code can branch on directly.",
+      "docs": [
+        "https://docs.typesafe.ai/primitives",
+        "https://docs.typesafe.ai/api"
+      ]
+    },
+    {
+      "id": "parallel-fanout",
+      "rank": 3,
+      "badge": "Cost / speed",
+      "title": "Ask every question you might need in one call",
+      "summary": "Questions over the same state run in parallel. Adding a speculative question is almost free. The parallel-questions cookbook is ~12× cheaper and ~10× faster than 13 serial calls.",
+      "detail": "State is ingested once. Coding agents default to one question per call — fight that habit. Ignore answers you do not need. Only make a second request when the next question's options or state literally cannot be built until the first answer exists.",
+      "action": "Fan out. Combine in code. Second round-trips are the exception.",
+      "docs": [
+        "https://docs.typesafe.ai/patterns/fan-out",
+        "https://docs.typesafe.ai/cookbooks/parallel_questions"
+      ]
+    },
+    {
+      "id": "output-free",
+      "rank": 4,
+      "badge": "Pricing",
+      "title": "Output tokens are free. Input is $0.042 / MTok",
+      "summary": "$42 per billion input tokens. Output is too cheap to meter. There is no 200k-style cliff on Jev 1.13 — the constraint is a 64k request budget (32k for state + longest question).",
+      "detail": "Rate limits start at 250k tokens/s and 1,200 rpm and can move without notice during early access. SDKs retry 429/529 with backoff. Pin jev-1.13.0 if you have tuned thresholds; jev-latest moves when a new release ships.",
+      "action": "Optimize for question quality and state size, not output length.",
+      "docs": [
+        "https://docs.typesafe.ai/models"
+      ]
+    },
+    {
+      "id": "confidence-not-probability",
+      "rank": 5,
+      "badge": "Routing",
+      "title": "Confidence is a second axis — and Noul does not have one",
+      "summary": "Choice and Score return confidence derived from how peaked the distribution is. Noul's only signal is the probability itself. Do not copy a Noul threshold onto a Choice.",
+      "detail": "High confidence → act. Medium → confirm. Low → human or a slower model. Raise the bar for irreversible actions. TypeSafe is explicit that P(noul) and 1−P(not noul) are not guaranteed to sum to 1, and a Noul is not interchangeable with a yes/no Choice.",
+      "action": "Put thresholds in one file. Match them to risk. Plot confidence vs accuracy on your data.",
+      "docs": [
+        "https://docs.typesafe.ai/confidence",
+        "https://docs.typesafe.ai/patterns/confidence-routing"
+      ]
+    },
+    {
+      "id": "code-owns-workflow",
+      "rank": 6,
+      "badge": "Architecture",
+      "title": "Code owns the workflow. Jev is a smart if-statement",
+      "summary": "TypeSafe is for AI-powered software, not agents that choose their next action. Deterministic rules, arithmetic, retrieval, and side effects stay in code.",
+      "detail": "Decompose broad judgments into atomic questions. Weight and combine answers in code so policy can change without a new prompt. For learned composition, feed probabilities into a classical model (see AutoResearch). Do not put an agent while-loop around Jev unless a person is watching.",
+      "action": "Write the software first. Insert System One only where common sense is required.",
+      "docs": [
+        "https://docs.typesafe.ai/concepts/how-to-build-with-system-one",
+        "https://docs.typesafe.ai/patterns/composite-scoring"
+      ]
+    },
+    {
+      "id": "jaggedness",
+      "rank": 7,
+      "badge": "Honesty",
+      "title": "Jev 1.13 is literal, and it cannot count",
+      "summary": "It answers the question you wrote, not the one you meant. Keep math, counting, and date arithmetic in code. Filter state before you send it — unrelated context costs accuracy.",
+      "detail": "Known jagged edges: literal reading, numeric precision, date comparison, multi-hop indirection, adversarial state, contradictory instructions vs criteria, and generation. Hex colors underperform named colors. Do not interpolate an exact number from a Score between two levels.",
+      "action": "Read the jaggedness page before production. Test boundary cases. Extraction is a judgment; arithmetic is not.",
+      "docs": [
+        "https://docs.typesafe.ai/model-jaggedness/jev-1.13"
+      ]
+    },
+    {
+      "id": "no-finetune",
+      "rank": 8,
+      "badge": "Customization",
+      "title": "You cannot fine-tune Jev. You shape it per request",
+      "summary": "No LoRA, no per-account weights. Put proprietary records in state. Put domain rules in instructions and criteria. Decompose and combine in code.",
+      "detail": "The same RLCD-trained weights serve every account. TypeSafe says customer requests are not used for training. Enterprise ZDR is a legal/plan feature, not a model switch. If you have tuned thresholds, pin the versioned model id.",
+      "action": "Invest in question design and state hygiene, not in a custom checkpoint.",
+      "docs": [
+        "https://docs.typesafe.ai/models",
+        "https://docs.typesafe.ai/primitives/advanced"
+      ]
+    },
+    {
+      "id": "pair-with-llm",
+      "rank": 9,
+      "badge": "System of models",
+      "title": "Jev decides. A generative model writes",
+      "summary": "Use Jev to classify, route, score, guardrail, re-rank, and verify. Use a chat/coding model to draft, explain, and implement. That split is the product.",
+      "detail": "Cookbooks already show the pattern: screen RAG passages before they reach the answering model; check citations against the source; guardrail jailbreaks on the way in and out; pick one skill from a catalog; verify a tool-call trace atomically. Doom and Wikiracing are real-time demos of the same idea.",
+      "action": "Put Jev on the decision path. Keep Grok / GPT / Claude on the generation path.",
+      "docs": [
+        "https://docs.typesafe.ai/cookbooks/llm_guardrails",
+        "https://docs.typesafe.ai/cookbooks/citation_check"
+      ]
+    },
+    {
+      "id": "english-and-state",
+      "rank": 10,
+      "badge": "Input",
+      "title": "English-first, text-only, structured state wins",
+      "summary": "No image/audio/video input. Pre-process binaries to text. Point questions at nested fields with backticked paths like `ticket.messages[0].text`.",
+      "detail": "English is the primary training language. Other languages including CJK are handled but not equally well — watch confidence. Send only the fields the questions need. Large states full of distractors are a documented accuracy drop.",
+      "action": "Retrieve and filter in code, then send a small JSON state with explicit paths in instructions.",
+      "docs": [
+        "https://docs.typesafe.ai/concepts/state",
+        "https://docs.typesafe.ai/models"
+      ]
+    }
+  ]
+}

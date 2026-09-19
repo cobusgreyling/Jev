@@ -1,0 +1,53 @@
+{
+  "title": "Jev 1.13 jaggedness",
+  "applies_to": "jev-1.13",
+  "reviewed": "2026-09-17",
+  "source": "https://docs.typesafe.ai/model-jaggedness/jev-1.13",
+  "items": [
+    {
+      "id": "literal",
+      "title": "Literal reading",
+      "instead": "Write the exact condition. Put boundary cases in criteria. Split implied intent into two questions."
+    },
+    {
+      "id": "math",
+      "title": "Math, counting, numeric precision",
+      "instead": "Count and calculate in code. Ask one Noul per item, then sum. Prefer named buckets over hex/RGB."
+    },
+    {
+      "id": "dates",
+      "title": "Date and time comparison",
+      "instead": "Extract parts as Choice (month, day, year, or not stated). Assemble and compare in code."
+    },
+    {
+      "id": "indirection",
+      "title": "Multi-hop indirection",
+      "instead": "Reduce hops. Point at the relevant state with a backticked path."
+    },
+    {
+      "id": "context-rot",
+      "title": "Large state full of irrelevant detail",
+      "instead": "Filter first. Send only what the question needs."
+    },
+    {
+      "id": "adversarial",
+      "title": "Adversarial content",
+      "instead": "State is data, not hostile by default. Write precise criteria and test injections."
+    },
+    {
+      "id": "contradictory",
+      "title": "Contradictory instructions vs criteria",
+      "instead": "Treat criteria as an extension of the instruction. Do not map true to no."
+    },
+    {
+      "id": "invariants",
+      "title": "Structural invariants are not guaranteed",
+      "instead": "Do not assume P(yes)+P(not yes)=1 across two Nouls. Do not reuse a Noul threshold on a Choice."
+    },
+    {
+      "id": "generation",
+      "title": "Generation",
+      "instead": "Do not chain Choices to spell text. Use a generative model, or turn extraction into a Choice over candidates."
+    }
+  ]
+}

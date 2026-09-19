@@ -1,0 +1,63 @@
+{
+  "title": "Where Jev belongs",
+  "items": [
+    {
+      "id": "ticket-triage",
+      "title": "Support ticket triage",
+      "badge": "Intent routing",
+      "summary": "One call: department Choice, urgency Noul, frustration Score. Code sets priority and whether to auto-route.",
+      "steps": [
+        "Closed tickets skip the model.",
+        "Send message + policy + open orders as structured state.",
+        "Fan out topic, refund-requested, spam signals, frustration.",
+        "Low topic confidence → human. Else route."
+      ]
+    },
+    {
+      "id": "llm-guardrail",
+      "title": "Guardrail in front of a chat model",
+      "badge": "Verify everything",
+      "summary": "Screen inbound and outbound messages for jailbreak, credential harvest, and harm severity before a generative model runs.",
+      "steps": [
+        "Noul: is this a jailbreak attempt?",
+        "Noul: does it request a secret?",
+        "Score: harm if complied with.",
+        "Code blocks / reviews / passes."
+      ]
+    },
+    {
+      "id": "rag-filter",
+      "title": "Filter RAG passages",
+      "badge": "Map-reduce",
+      "summary": "Score each retrieved chunk for relevance, contradiction, and prompt injection. Only survivors reach the answering model.",
+      "steps": [
+        "Retrieve in code (BM25 / embeddings).",
+        "One Jev request per passage, or batched questions.",
+        "Drop injected instructions.",
+        "Flag contradictions instead of hiding them."
+      ]
+    },
+    {
+      "id": "citation-check",
+      "title": "Citation check",
+      "badge": "Verify everything",
+      "summary": "Choice: does the source span support the claim? Confidence below threshold → human review, not a silent pass.",
+      "steps": [
+        "Extract quote + claim + source span.",
+        "Ask one Choice with an explicit 'not enough context' option.",
+        "Route low confidence to a reviewer."
+      ]
+    },
+    {
+      "id": "tool-trace",
+      "title": "Verify a tool-call trace",
+      "badge": "Agents",
+      "summary": "Do not ask 'was this trace correct?'. Ask one Noul per argument, schema, and unit match.",
+      "steps": [
+        "Keep available_tools and the trace in state.",
+        "Atomic questions: right tool, args match schema, units match request.",
+        "Fail the step if any high-stakes Noul is low."
+      ]
+    }
+  ]
+}

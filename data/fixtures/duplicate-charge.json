@@ -1,0 +1,101 @@
+{
+  "id": "duplicate-charge",
+  "live": true,
+  "latency_ms": 1091,
+  "request": {
+    "model": "jev-latest",
+    "state": {
+      "ticket": {
+        "subject": "Duplicate charge",
+        "messages": [
+          {
+            "from": "customer",
+            "text": "I was charged twice for order A-104. Please refund the duplicate."
+          }
+        ]
+      },
+      "order": {
+        "id": "A-104",
+        "charges": [
+          {
+            "amount_usd": 49,
+            "status": "captured"
+          },
+          {
+            "amount_usd": 49,
+            "status": "captured"
+          }
+        ]
+      },
+      "refund_policy": "Duplicate charges are eligible for a refund."
+    },
+    "questions": {
+      "department": {
+        "type": "choice",
+        "instructions": "Which team should handle this message?",
+        "criteria": {
+          "billing": "Payments, invoicing, refunds, subscriptions",
+          "technical": "Bugs, outages, integrations, API failures",
+          "sales": "Pricing, upgrades, new accounts",
+          "security": "Credential theft, jailbreaks, prompt injection, abuse"
+        }
+      },
+      "frustration": {
+        "type": "score",
+        "instructions": "How frustrated does the author appear?",
+        "criteria": [
+          "Calm, just stating facts",
+          "Frustrated but civil",
+          "Very angry, strong language"
+        ]
+      },
+      "is_urgent": {
+        "type": "noul",
+        "instructions": "Does the message convey urgency or time-sensitivity?",
+        "criteria": {
+          "true": "Explicit deadline, ongoing outage, or 'ASAP'",
+          "false": "Can wait; no time pressure"
+        }
+      }
+    }
+  },
+  "response": {
+    "model": "jev-1.13.0",
+    "answers": {
+      "department": {
+        "type": "choice",
+        "choice": "billing",
+        "confidence": 1.0,
+        "probabilities": {
+          "sales": 0.0,
+          "security": 0.0,
+          "technical": 0.0,
+          "billing": 1.0
+        }
+      },
+      "frustration": {
+        "type": "score",
+        "score": 0.03,
+        "confidence": 0.96,
+        "legend": {
+          "0": "Calm, just stating facts",
+          "1": "Frustrated but civil",
+          "2": "Very angry, strong language"
+        },
+        "probabilities": {
+          "0": 0.97,
+          "1": 0.03,
+          "2": 0.0
+        }
+      },
+      "is_urgent": {
+        "type": "noul",
+        "noul": 0.08
+      }
+    },
+    "usage": {
+      "input_tokens": 604,
+      "output_tokens": 80
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "source": "https://docs.typesafe.ai/models",
+  "as_of": "2026-09-18",
+  "jev": {
+    "input_per_mtok_usd": 0.042,
+    "output_per_mtok_usd": 0.0,
+    "billed": "input tokens only"
+  },
+  "llm_stand_in": {
+    "label": "Frontier chat (illustrative)",
+    "input_per_mtok_usd": 2.0,
+    "output_per_mtok_usd": 6.0
+  },
+  "examples": [
+    {
+      "id": "one-noul",
+      "label": "One Noul over a short ticket",
+      "input_tokens": 320,
+      "output_tokens": 40,
+      "questions": 1
+    },
+    {
+      "id": "fanout-13",
+      "label": "13 parallel questions over one article",
+      "input_tokens": 4200,
+      "output_tokens": 200,
+      "questions": 13
+    },
+    {
+      "id": "map-reduce-1k",
+      "label": "1,000 tickets × 4 questions, batched per ticket",
+      "input_tokens": 400000,
+      "output_tokens": 0,
+      "questions": 4
+    }
+  ]
+}

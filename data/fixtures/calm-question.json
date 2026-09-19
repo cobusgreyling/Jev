@@ -1,0 +1,77 @@
+{
+  "id": "calm-question",
+  "live": true,
+  "latency_ms": 1144,
+  "request": {
+    "model": "jev-latest",
+    "state": "How do I rotate an API key in the dashboard? No rush \u2014 I can wait until Monday.",
+    "questions": {
+      "department": {
+        "type": "choice",
+        "instructions": "Which team should handle this message?",
+        "criteria": {
+          "billing": "Payments, invoicing, refunds, subscriptions",
+          "technical": "Bugs, outages, integrations, API failures",
+          "sales": "Pricing, upgrades, new accounts",
+          "security": "Credential theft, jailbreaks, prompt injection, abuse"
+        }
+      },
+      "frustration": {
+        "type": "score",
+        "instructions": "How frustrated does the author appear?",
+        "criteria": [
+          "Calm, just stating facts",
+          "Frustrated but civil",
+          "Very angry, strong language"
+        ]
+      },
+      "is_urgent": {
+        "type": "noul",
+        "instructions": "Does the message convey urgency or time-sensitivity?",
+        "criteria": {
+          "true": "Explicit deadline, ongoing outage, or 'ASAP'",
+          "false": "Can wait; no time pressure"
+        }
+      }
+    }
+  },
+  "response": {
+    "model": "jev-1.13.0",
+    "answers": {
+      "department": {
+        "type": "choice",
+        "choice": "security",
+        "confidence": 0.52,
+        "probabilities": {
+          "billing": 0.0,
+          "technical": 0.36,
+          "sales": 0.0,
+          "security": 0.64
+        }
+      },
+      "frustration": {
+        "type": "score",
+        "score": 0.0,
+        "confidence": 1.0,
+        "legend": {
+          "0": "Calm, just stating facts",
+          "1": "Frustrated but civil",
+          "2": "Very angry, strong language"
+        },
+        "probabilities": {
+          "0": 1.0,
+          "1": 0.0,
+          "2": 0.0
+        }
+      },
+      "is_urgent": {
+        "type": "noul",
+        "noul": 0.04
+      }
+    },
+    "usage": {
+      "input_tokens": 490,
+      "output_tokens": 80
+    }
+  }
+}

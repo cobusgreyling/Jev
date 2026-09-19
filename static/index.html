@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jev Showcase — TypeSafe System One, not chat</title>
+  <meta name="description" content="Unofficial TypeSafe Jev lab: Choice, Score, and Noul over the same state. Calibrated probabilities, confidence-gated routing, and what launch posts skip." />
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <img src="/static/header.jpg" alt="Jev — a crystalline decision engine emitting parallel judgment beams" class="banner" onerror="this.style.display='none'" />
+    <div class="hero-copy">
+      <p class="eyebrow">TypeSafe AI · Jev 1.13 · Unofficial showcase</p>
+      <h1>Jev</h1>
+      <p class="sub">
+        A <strong>System One</strong> model: unstructured state in, typed probabilistic
+        decisions out. Not a chatbot. This lab surfaces the operator layer —
+        <strong>three primitives</strong>, <strong>parallel fan-out</strong>,
+        <strong>confidence as a second axis</strong>.
+      </p>
+      <div class="badges">
+        <span class="badge">Choice · Score · Noul</span>
+        <span class="badge">$0.042 / MTok · output free</span>
+        <span class="badge">70–500 ms</span>
+        <span class="badge" id="liveBadge">checking…</span>
+      </div>
+      <div class="hero-links">
+        <a class="btn primary" href="#lab">Open the lab</a>
+        <a class="btn ghost" href="https://typesafe.ai/blog/introducing-system-one-models-and-jev" target="_blank" rel="noopener">Announcement</a>
+        <a class="btn ghost" href="https://docs.typesafe.ai/" target="_blank" rel="noopener">Docs</a>
+        <a class="btn ghost" href="https://console.typesafe.ai/" target="_blank" rel="noopener">Console</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="strip" aria-label="At a glance">
+      <div class="stat">
+        <div class="stat-n">3</div>
+        <div class="stat-l">primitives, not tokens</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n">0%</div>
+        <div class="stat-l">schema errors (by construction)</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n">~12×</div>
+        <div class="stat-l">cheaper when you fan out</div>
+      </div>
+      <div class="stat">
+        <div class="stat-n">code</div>
+        <div class="stat-l">owns the workflow</div>
+      </div>
+    </section>
+
+    <section class="panel" id="why">
+      <h2>Beyond the latency screenshot</h2>
+      <p class="lede">
+        Most posts stop at “fast structured output.” The docs hide the design
+        rules that actually make Jev usable in software.
+      </p>
+      <div class="pill-grid">
+        <article class="pill">
+          <h3>Not a chatbot</h3>
+          <p>No prose, no code, no explanations. Pair Jev with a generative model when you need language.</p>
+        </article>
+        <article class="pill">
+          <h3>Fan out</h3>
+          <p>Ask every question over the same state in one call. Speculative questions are almost free.</p>
+        </article>
+        <article class="pill">
+          <h3>Confidence gate</h3>
+          <p>The label is what. Confidence is whether to act. Noul has no separate confidence field.</p>
+        </article>
+        <article class="pill">
+          <h3>Jagged on purpose</h3>
+          <p>Literal, not a calculator. Count, dates, and arithmetic stay in code.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="lab">
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-tab="hidden" type="button">What people miss</button>
+        <button class="tab" data-tab="play" type="button">Playground</button>
+        <button class="tab" data-tab="cost" type="button">Cost lab</button>
+        <button class="tab" data-tab="patterns" type="button">Patterns</button>
+        <button class="tab" data-tab="jagged" type="button">Jaggedness</button>
+        <button class="tab" data-tab="scenarios" type="button">Scenarios</button>
+        <button class="tab" data-tab="live" type="button">Live judge</button>
+        <button class="tab" data-tab="card" type="button">Model card</button>
+      </div>
+
+      <div id="tab-hidden" class="tab-panel active panel">
+        <h2>What people miss</h2>
+        <p class="lede" id="hiddenSub">Operator-level details from official docs — not the homepage chart.</p>
+        <div id="hiddenRoot" class="scenario-list">Loading…</div>
+        <p class="footnote" id="hiddenNote"></p>
+      </div>
+
+      <div id="tab-play" class="tab-panel panel">
+        <h2>Primitives playground</h2>
+        <p class="lede">
+          One state, three question types, then a policy in <em>your</em> code.
+          Offline fixtures work with no key.
+        </p>
+        <div class="chips" id="presetChips"></div>
+        <div class="cost-grid" style="margin-top:1rem">
+          <div class="play-form">
+            <label>State
+              <textarea id="playState"></textarea>
+            </label>
+            <div class="composer-row">
+              <button class="btn primary" id="playBtn" type="button">Judge (offline fixture)</button>
+            </div>
+            <p class="footnote">Live calls live on the Live judge tab so this one stays key-free.</p>
+          </div>
+          <div class="side-card" id="playMeta">
+            <h4>This request</h4>
+            <p>Choice <code>department</code> · Score <code>frustration</code> · Noul <code>is_urgent</code>, evaluated in parallel.</p>
+          </div>
+        </div>
+        <div id="playAnswers"></div>
+        <div id="playPolicy"></div>
+      </div>
+
+      <div id="tab-cost" class="tab-panel panel">
+        <h2>Cost lab</h2>
+        <p class="lede">
+          Jev bills <strong>input only</strong> at $0.042 / MTok. Output is free.
+          Batching questions over one state is the whole cost story.
+        </p>
+        <div class="cost-grid">
+          <div class="cost-form">
+            <label>Input tokens <input type="number" id="cIn" value="320" min="0" step="10" /></label>
+            <label>Output tokens (free) <input type="number" id="cOut" value="48" min="0" step="1" /></label>
+            <label>Questions in this call <input type="number" id="cQ" value="3" min="1" /></label>
+            <div class="composer-row">
+              <button class="btn primary" id="costBtn" type="button">Estimate</button>
+              <button class="btn ghost" id="costFanout" type="button">13-question fan-out</button>
+            </div>
+          </div>
+          <div class="side-card" id="costResult">
+            <h4>Result</h4>
+            <p style="margin:0">Adjust inputs and estimate.</p>
+          </div>
+        </div>
+        <div class="side-card" id="fanoutResult" style="margin-top:1rem;display:none"></div>
+        <p class="footnote">Source: <a href="https://docs.typesafe.ai/models" target="_blank" rel="noopener">docs.typesafe.ai/models</a>. LLM stand-in is illustrative $2 / $6.</p>
+      </div>
+
+      <div id="tab-patterns" class="tab-panel panel">
+        <h2>Patterns</h2>
+        <p class="lede">Four ways to compose System One into software. Code still owns the graph.</p>
+        <div id="patternRoot" class="pill-grid">Loading…</div>
+      </div>
+
+      <div id="tab-jagged" class="tab-panel panel">
+        <h2>Jaggedness</h2>
+        <p class="lede">Jev 1.13 is fast and calibrated. It is also literal, and it cannot count. Official failure modes:</p>
+        <div id="jaggedRoot" class="scenario-list">Loading…</div>
+        <p class="footnote">Source: <a href="https://docs.typesafe.ai/model-jaggedness/jev-1.13" target="_blank" rel="noopener">Jev 1.13 jaggedness</a>.</p>
+      </div>
+
+      <div id="tab-scenarios" class="tab-panel panel">
+        <h2>Where Jev belongs</h2>
+        <p class="lede">Decision paths. Generation still needs a chat/coding model.</p>
+        <div id="scenarioRoot" class="scenario-list">Loading…</div>
+      </div>
+
+      <div id="tab-live" class="tab-panel panel">
+        <h2>Live judge</h2>
+        <p class="lede">
+          Optional. <code>POST /v1/systemone</code> with the same three questions.
+          Needs <code>TYPESAFE_API_KEY</code>. The key never appears in the UI.
+        </p>
+        <label>State
+          <textarea id="liveState">Hi, I've been trying to connect my Stripe account for 3 days and it keeps failing. I'm losing sales. Please help ASAP.</textarea>
+        </label>
+        <div class="composer-row" style="margin-top:0.65rem">
+          <button class="btn primary" id="liveBtn" type="button">Call Jev</button>
+          <button class="btn ghost" id="liveClear" type="button">Clear</button>
+        </div>
+        <div class="err" id="liveErr" hidden></div>
+        <div id="liveAnswers"></div>
+        <div id="livePolicy"></div>
+      </div>
+
+      <div id="tab-card" class="tab-panel panel">
+        <h2>Model card</h2>
+        <div class="table-wrap">
+          <table class="card" id="cardTable">
+            <tbody><tr><td colspan="2">Loading…</td></tr></tbody>
+          </table>
+        </div>
+        <div class="pill-grid" id="gotchaGrid" style="margin-top:1rem"></div>
+        <p class="footnote" id="cardDisclaimer"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site">
+    Unofficial showcase · Specs from TypeSafe docs · not affiliated with TypeSafe AI ·
+    <a href="https://github.com/cobusgreyling/Jev">GitHub</a>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

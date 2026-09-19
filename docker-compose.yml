@@ -1,0 +1,10 @@
+services:
+  lab:
+    build: .
+    ports:
+      - "7872:7872"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=7872
+      # Optional live judge — pass at runtime, never bake into the image:
+      # - TYPESAFE_API_KEY

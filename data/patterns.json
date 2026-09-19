@@ -1,0 +1,34 @@
+{
+  "title": "Four patterns that actually use Jev",
+  "source": "https://docs.typesafe.ai/patterns",
+  "items": [
+    {
+      "id": "fan-out",
+      "name": "Speculative fan-out",
+      "what": "Send every question the code might need, including ones that only matter on some paths.",
+      "why": "Questions run in parallel. Unused answers are cheap. Serial calls re-pay the state.",
+      "code_owns": "Which answers to read."
+    },
+    {
+      "id": "confidence-routing",
+      "name": "Confidence-gated routing",
+      "what": "Treat confidence as a second axis: act / confirm / human.",
+      "why": "A peaked distribution is a different signal from the winning label.",
+      "code_owns": "Thresholds, and the fact that irreversible actions need a higher bar."
+    },
+    {
+      "id": "composite-scoring",
+      "name": "Composite scoring",
+      "what": "Split a fuzzy judgment into atomic scores, then weight them in code.",
+      "why": "When the team disagrees with the combined result, you change weights — not a prompt.",
+      "code_owns": "Weights, caps, and the final formula."
+    },
+    {
+      "id": "intent-routing",
+      "name": "Intent routing",
+      "what": "Classify the request, then dispatch to deterministic logic, a specialist LLM, or a person.",
+      "why": "Jev is fast enough to sit on the hot path in front of expensive generation.",
+      "code_owns": "The handler map and what happens on low confidence."
+    }
+  ]
+}
