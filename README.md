@@ -90,6 +90,26 @@ The key is never printed. Store it as `TYPESAFE_API_KEY`, `~/.typesafe/api_key`,
 ./run.sh
 ```
 
+### Agent skills
+
+Portable `SKILL.md` files for coding agents. Official TypeSafe skill: [typesafe-ai/skills](https://github.com/typesafe-ai/skills).
+
+```bash
+npx skills add cobusgreyling/Jev --skill jev
+npx skills add cobusgreyling/Jev --skill jev-fanout
+npx skills add cobusgreyling/Jev --skill jev-guardrail
+npx skills add cobusgreyling/Jev --skill jev-route
+```
+
+| Skill | Purpose |
+|-------|---------|
+| [`jev`](skills/jev/SKILL.md) | Primitives and when to call Jev |
+| [`jev-fanout`](skills/jev-fanout/SKILL.md) | Speculative fan-out (one request, many questions) |
+| [`jev-guardrail`](skills/jev-guardrail/SKILL.md) | Input/output hazard screen |
+| [`jev-route`](skills/jev-route/SKILL.md) | Confidence lanes and model-tier routing |
+
+Grok also loads [`.grok/skills/`](.grok/skills) (symlinks). Catalog: [`skills/README.md`](skills/README.md).
+
 ### Docker
 
 ```bash
@@ -194,7 +214,8 @@ make secret-scan
 ├── examples/01–07            Progressive scripts
 ├── data/                     model-card, claims, fixtures
 ├── docs/                     Operator notes + smart-home + sources
-├── skills/jev/               Agent skill
+├── skills/                   Agent skills (jev, jev-fanout, jev-guardrail, jev-route)
+├── .grok/skills/             Grok-discoverable copies of those skills
 ├── tests/                    pytest
 └── SECURITY.md               Key hygiene
 ```
@@ -230,6 +251,7 @@ This is **not** an official TypeSafe product. It does **not** replace `typesafe-
 | Official jaggedness | [Jev 1.13](https://docs.typesafe.ai/model-jaggedness/jev-1.13) |
 | Official patterns | [docs.typesafe.ai/patterns](https://docs.typesafe.ai/patterns) |
 | Workflow evals | [evals.typesafe.ai](https://evals.typesafe.ai/) |
+| Agent skills | [skills/](skills/) |
 
 ---
 

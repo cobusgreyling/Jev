@@ -1,6 +1,6 @@
 ---
 name: jev
-description: Use TypeSafe Jev for typed judgments (Choice, Score, Noul) instead of asking a chat model to classify. Pair with a generative model for prose.
+description: Use TypeSafe Jev for typed judgments (Choice, Score, Noul) instead of asking a chat model to classify. Pair with a generative model for prose. Use when classifying, routing, scoring, guardrailing, or the user runs /jev.
 ---
 
 # Jev — System One judgments
@@ -76,3 +76,5 @@ Question IDs are for your code. They are **not** sent to the model. Put the whol
 ```
 
 Official skill and cookbooks: https://docs.typesafe.ai/agent-skill
+
+Sibling skills in this repo: `skills/jev-fanout`, `skills/jev-guardrail`, `skills/jev-route`.
