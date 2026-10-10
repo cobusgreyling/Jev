@@ -54,8 +54,12 @@ def main() -> int:
             text = path.read_text(encoding="utf-8", errors="ignore")
         except OSError:
             continue
+        # Test fixtures embed a fake key of the form apikey_<hex>_bbbbbbbb
+        # so the redaction tests have something to strip. That suffix is not
+        # a TypeSafe key. Hide those fixtures before the apikey_ pattern runs.
+        scanned = re.sub(r"apikey_[0-9a-f]{20,}_b{8,}", "apikey_fixture", text, flags=re.I)
         for pattern in PATTERNS:
-            if pattern.search(text):
+            if pattern.search(scanned):
                 hits.append(f"{path.relative_to(ROOT)} matches {pattern.pattern}")
     if hits:
         print("secret-scan FAILED:")
