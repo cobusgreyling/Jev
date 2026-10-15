@@ -40,7 +40,7 @@ TypeSafe’s own framing: AI-powered **software**, not agents that pick the next
 
 ## 7. You cannot fine-tune Jev
 
-Same RLCD weights for every account. Customize with `state`, `instructions`, and `criteria`. Pin `jev-1.13.0` if you have tuned thresholds; `jev-latest` moves.
+Same RLCD weights for every account. Customize with `state`, `instructions`, and `criteria`. This repo defaults to `jev-1.13.0`. Set `TYPESAFE_MODEL=jev-latest` only when you mean to track the alias.
 
 ## 8. Jev 1.13 is literal and cannot count
 

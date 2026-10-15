@@ -130,7 +130,7 @@ function replyHtml(kind, text, extra = "") {
 function footHtml(payload) {
   const n = payload.question_count ?? (payload.trace || []).length;
   const tokens = (payload.usage?.input_tokens || 0) + (payload.usage?.output_tokens || 0);
-  const src = payload.source === "live" ? payload.model : payload.source;
+  const src = payload.source === "live" ? payload.model : payload.source === "mock" ? "offline mock" : payload.source;
   return `<div class="foot">${esc(src || "jev")} · ${n} prompts · ${payload.latency_ms}ms · ${tokens} tokens</div>`;
 }
 
@@ -159,7 +159,7 @@ async function run(request) {
   try {
     const ev = await judge(request);
     house = ev.house;
-    const srcLabel = ev.source === "live" ? "TypeSafe" : "offline mock";
+    const srcLabel = ev.source === "live" ? "TypeSafe" : ev.source === "mock" ? "offline mock" : ev.source;
     $("timing").innerHTML = `${srcLabel} <b>${ev.latency_ms}ms</b>`;
     const trace = traceHtml(ev.trace);
     const foot = footHtml(ev);
@@ -187,7 +187,7 @@ async function run(request) {
           )}${traceHtml(sub.trace)}</div>`
         );
       }
-      $("timing").innerHTML += ` · split (${esc(split.via)}) · TypeSafe ×${split.commands.length} <b>${slowest}ms</b>`;
+      $("timing").innerHTML += ` · split (${esc(split.via)}) · ${split.commands.length} commands <b>${slowest}ms</b>`;
       log.innerHTML =
         replyHtml("", `Split into ${split.commands.length} commands.`) +
         parts.join("") +

@@ -44,14 +44,14 @@ Question IDs are for your code. They are **not** sent to the model. Put the whol
 4. Do not reuse a Noul threshold on a Choice.
 5. Send only the state the questions need. Point at fields with `` `ticket.messages[0].text` ``.
 6. A second HTTP call is only for true dependencies (next options or next state cannot be built yet).
-7. Pin `jev-1.13.0` if thresholds were tuned against that version; `jev-latest` moves.
+7. This repo defaults to `jev-1.13.0`. `jev-latest` moves; set it only on purpose.
 
 ## Minimal request
 
 ```json
 {
   "state": "I was charged twice. Please refund the duplicate today.",
-  "model": "jev-latest",
+  "model": "jev-1.13.0",
   "questions": {
     "department": {
       "type": "choice",

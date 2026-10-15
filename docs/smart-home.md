@@ -23,9 +23,9 @@ Run the lab, then open **http://127.0.0.1:7872/home**.
 
 ## Offline vs live
 
-No key: a keyword mock returns the same answer *shape*, so the house still moves.
+No key, or `TYPESAFE_OFFLINE=1`: a keyword mock (`jev_lab/home_mock.py`) returns the same answer shape, so the house still moves. The trace is labeled `mock`.
 
-`TYPESAFE_API_KEY` set: each Send is `POST /v1/systemone` with the real questions. The key never reaches the browser.
+A key set: each Send is `POST /v1/systemone` with the real questions (`model` defaults to `jev-1.13.0`). The key never reaches the browser. If that call fails, the page shows the error. It does not apply a mock plan that looks like a successful judgment. The dispatcher that decides what to do with the answers is `plan()` in `jev_lab/home.py`.
 
 ## Homes
 

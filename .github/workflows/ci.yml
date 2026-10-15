@@ -8,14 +8,21 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      TYPESAFE_OFFLINE: "1"
+      TYPESAFE_API_KEY: ""
+      JEV_API_KEY: ""
+      TYPESAFE_KEY_FILE: /tmp/jev-ci-missing-key
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install -r requirements.txt
-      - run: python scripts/secret_scan.py
-      - run: python -m pytest -q
+      - run: pip install -r requirements.lock
+      - run: make lint
+      - run: make secret-scan
+      - run: make test
+      - run: make examples
 
   js:
     runs-on: ubuntu-latest
@@ -30,6 +37,7 @@ jobs:
           cache: npm
           cache-dependency-path: packages/js/package-lock.json
       - run: npm ci
+      - run: npm run typecheck
       - run: npm test
         env:
           TYPESAFE_API_KEY: ""

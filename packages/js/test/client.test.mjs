@@ -1,6 +1,28 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { systemOne, TypeSafeError } from '../dist/client.js';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import { describeKeySource, systemOne, TypeSafeError } from '../dist/client.js';
+
+const savedEnv = {
+  TYPESAFE_API_KEY: process.env.TYPESAFE_API_KEY,
+  JEV_API_KEY: process.env.JEV_API_KEY,
+  TYPESAFE_KEY_FILE: process.env.TYPESAFE_KEY_FILE,
+};
+
+function restoreEnv() {
+  for (const [key, value] of Object.entries(savedEnv)) {
+    if (value === undefined) delete process.env[key];
+    else process.env[key] = value;
+  }
+}
+
+function hideKeys() {
+  delete process.env.TYPESAFE_API_KEY;
+  delete process.env.JEV_API_KEY;
+  process.env.TYPESAFE_KEY_FILE = path.join(tmpdir(), 'jev-no-such-key-file');
+}
 
 function jsonResponse(status, body, headers = {}) {
   return new Response(JSON.stringify(body), {
@@ -47,6 +69,33 @@ test('systemOne retries 429 then succeeds', async () => {
   );
   assert.equal(n, 2);
   assert.equal(res.answers.x.noul, 1);
+});
+
+test('describeKeySource is none when env and files are missing', () => {
+  hideKeys();
+  try {
+    assert.equal(describeKeySource(), 'none');
+    process.env.TYPESAFE_API_KEY = '   ';
+    assert.equal(describeKeySource(), 'none');
+  } finally {
+    restoreEnv();
+  }
+});
+
+test('describeKeySource reports file or env', () => {
+  hideKeys();
+  const dir = mkdtempSync(path.join(tmpdir(), 'jev-key-'));
+  try {
+    const file = path.join(dir, 'api_key');
+    writeFileSync(file, 'test-key-value\n');
+    process.env.TYPESAFE_KEY_FILE = file;
+    assert.equal(describeKeySource(), 'file');
+    process.env.JEV_API_KEY = 'test-key-value';
+    assert.equal(describeKeySource(), 'env');
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+    restoreEnv();
+  }
 });
 
 test('systemOne throws TypeSafeError without echoing the key', async () => {
