@@ -16,6 +16,7 @@
   ],
   "scripts": {
     "build": "tsc",
+    "typecheck": "tsc --noEmit",
     "test": "npm run build && node --test test/*.test.mjs",
     "prepublishOnly": "npm test",
     "start": "node dist/cli.js"
@@ -42,7 +43,7 @@
   },
   "homepage": "https://github.com/cobusgreyling/Jev",
   "bugs": {
-    "url": "https://github.com/cobusgreyling/loop-engineering/issues"
+    "url": "https://github.com/cobusgreyling/Jev/issues"
   },
   "publishConfig": {
     "access": "public"

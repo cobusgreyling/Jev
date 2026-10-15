@@ -1,5 +1,8 @@
 .PHONY: demo-offline demo examples test lint secret-scan
 
+lint:
+	python3 -m ruff check .
+
 demo-offline: demo
 
 demo:

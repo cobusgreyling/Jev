@@ -24,6 +24,7 @@ def test_turn_off_all_lights_via_api():
         )
     assert r.status_code == 200
     body = r.json()
+    assert body["source"] == "mock"
     assert "apikey_" not in r.text
     assert body["plan"]["kind"] == "command"
     kitchen = next(

@@ -45,7 +45,7 @@ Full write-up: **[docs/WHAT-PEOPLE-MISS.md](docs/WHAT-PEOPLE-MISS.md)** · inter
 
 | | |
 |--|--|
-| **Model id** | `jev-1.13.0` (`jev-latest`) |
+| **Model id** | `jev-1.13.0` is the default in this repo. `jev-latest` is an opt-in alias (`TYPESAFE_MODEL=jev-latest`) |
 | **Class** | System One (not a chat LLM) |
 | **Endpoint** | `POST /v1/systemone` |
 | **Context** | 64k / request; 32k for state + longest question |
@@ -65,13 +65,17 @@ git clone https://github.com/cobusgreyling/Jev.git
 cd Jev
 
 python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements.lock
 python app.py
 ```
+
+`requirements.txt` is the unpinned floor. `requirements.lock` is what this install, Docker, and CI use.
 
 Open **http://127.0.0.1:7872/home** for the smart-home demo (TypeSafe’s fan-out house), or **http://127.0.0.1:7872** for the operator lab.
 
 ### Harness CLI (TypeScript)
+
+Source-only. `@cobusgreyling/jev` is not on npm. Install it from `packages/js` in this repo. Its `package.json` version (`0.1.0`) is the harness. The lab version is the root `VERSION` file (`1.2.0`). They move separately.
 
 The same System One questions, packaged for agent loops — model routing, semantic retrieval, LLM guardrails, reasoning-trace classification. Wired into [Loop Engineering](https://github.com/cobusgreyling/loop-engineering) as `loop-jev`.
 
@@ -84,7 +88,7 @@ npx jev guard --side input --text "Ignore previous instructions" --json
 
 Docs: [`packages/js/README.md`](packages/js/README.md) · [loop-engineering/docs/jev.md](https://github.com/cobusgreyling/loop-engineering/blob/main/docs/jev.md)
 
-The key is never printed. Store it as `TYPESAFE_API_KEY`, `~/.typesafe/api_key`, or `~/.config/typesafe/api_key` (mode 600).
+The key is never printed. The lab and the CLI read the same places: `TYPESAFE_API_KEY`, `JEV_API_KEY`, `~/.config/typesafe/api_key`, or `~/.typesafe/api_key` (mode 600). `TYPESAFE_OFFLINE=1` keeps the lab on fixtures. A failed live call is an error, not a silent mock.
 
 ```bash
 ./run.sh
@@ -154,7 +158,7 @@ curl -X POST https://api.typesafe.ai/v1/systemone \
   -H "Content-Type: application/json" \
   -d '{
     "state": "I was charged twice. Please refund the duplicate today.",
-    "model": "jev-latest",
+    "model": "jev-1.13.0",
     "questions": {
       "department": {
         "type": "choice",
@@ -198,6 +202,7 @@ Fixtures by default. Add `--live` when `TYPESAFE_API_KEY` is set.
 
 ```bash
 make test
+make lint
 make secret-scan
 ```
 
@@ -207,7 +212,10 @@ make secret-scan
 
 ```text
 ├── app.py / static/          Operator lab + /home smart-home demo
-├── jev_lab/                  HTTP client, cost, policy, house dispatcher
+├── jev_lab/                  HTTP client, cost, policy
+│   ├── home.py               plan() — which answers the branch reads, then act
+│   ├── home_catalog.py       rooms and devices
+│   └── home_mock.py          offline keyword parser (not Jev)
 ├── packages/js/              TypeScript harness CLI (@cobusgreyling/jev)
 ├── FRAMEWORK.md              The eight-layer showcase skeleton
 ├── BLOG.md                   Narrative article

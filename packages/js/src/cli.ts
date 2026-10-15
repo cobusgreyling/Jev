@@ -28,7 +28,8 @@ Usage:
   jev doctor [--json]
 
 Auth (never printed):
-  TYPESAFE_API_KEY  or  ~/.config/typesafe/api_key  (mode 600)
+  TYPESAFE_API_KEY or JEV_API_KEY
+  ~/.config/typesafe/api_key or ~/.typesafe/api_key (mode 600)
   TYPESAFE_KEY_FILE overrides the key file path (tests).
 
 Without a key, a local heuristic fallback runs so CI stays green. Pass
@@ -106,7 +107,9 @@ async function cmdDoctor(flags: Flags): Promise<number> {
     console.log(`Jev: configured (${report.source}). Endpoint ${report.endpoint}. Model ${report.model}.`);
   } else {
     console.log('Jev: no API key. Heuristic fallback will run.');
-    console.log('Set TYPESAFE_API_KEY or write ~/.config/typesafe/api_key (chmod 600).');
+    console.log(
+      'Set TYPESAFE_API_KEY, or write ~/.config/typesafe/api_key or ~/.typesafe/api_key (chmod 600).',
+    );
   }
   return configured ? 0 : 1;
 }

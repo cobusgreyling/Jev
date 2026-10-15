@@ -2,6 +2,7 @@
 """04 — Speculative fan-out: mix Choice, Score, and Noul in one request."""
 
 from lib import judge
+
 from jev_lab.cost import fanout_comparison
 
 STATE = "Hi, I've been trying to connect my Stripe account for 3 days and it keeps failing. I'm losing sales. Please help ASAP."

@@ -30,10 +30,12 @@ test('cli help exits 0', () => {
 });
 
 test('cli doctor reports missing key without printing one', () => {
-  const r = runCli(['doctor', '--json']);
+  const r = runCli(['doctor', '--json'], { TYPESAFE_MODEL: '' });
   assert.equal(r.status, 1);
   const report = JSON.parse(r.stdout);
   assert.equal(report.configured, false);
+  assert.equal(report.source, 'none');
+  assert.equal(report.model, 'jev-1.13.0');
   assert.equal(JSON.stringify(report).includes('apikey_'), false);
 });
 

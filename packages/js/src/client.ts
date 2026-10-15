@@ -5,6 +5,7 @@
  * (override path with TYPESAFE_KEY_FILE). The key is never logged or returned.
  */
 
+import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import path from 'node:path';
@@ -12,7 +13,7 @@ import { containsSecret, redactSecrets, redactString } from './redact.js';
 import type { Answer, Questions } from './questions.js';
 
 export const DEFAULT_ENDPOINT = 'https://api.typesafe.ai/v1/systemone';
-export const DEFAULT_MODEL = 'jev-latest';
+export const DEFAULT_MODEL = 'jev-1.13.0';
 
 export type FetchLike = (input: string | URL, init?: RequestInit) => Promise<Response>;
 
@@ -76,8 +77,10 @@ export function keyIsConfigured(key?: string): boolean {
 }
 
 export function describeKeySource(): 'env' | 'file' | 'none' {
-  if (process.env.TYPESAFE_API_KEY || process.env.JEV_API_KEY) return 'env';
-  return 'file';
+  const env = (process.env.TYPESAFE_API_KEY || process.env.JEV_API_KEY || '').trim();
+  if (env) return 'env';
+  if (candidateKeyFiles().some((file) => existsSync(file))) return 'file';
+  return 'none';
 }
 
 function sleep(ms: number): Promise<void> {

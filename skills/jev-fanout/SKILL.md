@@ -13,7 +13,7 @@ Primitives and auth: `skills/jev/SKILL.md`. Official pattern: https://docs.types
 
 1. List the judgments the workflow might need, including speculative ones (category, compound, room, device, availability, action per device type).
 2. Put each in `questions` with complete `instructions`. Write the speculative premise into the question (`If this is a light command, …`). Question IDs are not sent to the model.
-3. Mix `choice`, `score`, and `noul` in that one request. Pin `jev-1.13.0` once thresholds are tuned; `jev-latest` moves.
+3. Mix `choice`, `score`, and `noul` in that one request. This repo defaults to `jev-1.13.0`. `jev-latest` moves; set it only on purpose.
 4. In code, branch on the answers that apply; leave the rest unused.
 5. Make a second HTTP call only when the next options or next state cannot be built yet.
 
@@ -28,7 +28,7 @@ Primitives and auth: `skills/jev/SKILL.md`. Official pattern: https://docs.types
 ```json
 {
   "state": "I've been trying to connect Stripe for 3 days. I'm losing sales. Help ASAP.",
-  "model": "jev-latest",
+  "model": "jev-1.13.0",
   "questions": {
     "department": {
       "type": "choice",
@@ -55,6 +55,6 @@ Primitives and auth: `skills/jev/SKILL.md`. Official pattern: https://docs.types
 ## This repo
 
 - `examples/04_parallel_fanout.py` — Choice + Score + Noul in one call
-- `jev_lab/home.py` and `/home` — ~13 speculative questions, then the dispatcher acts
+- `jev_lab/home.py` (`plan`) and `/home` — ~13 speculative questions, then the dispatcher acts. Catalog: `home_catalog.py`. Offline parser: `home_mock.py`.
 - `packages/js/src/turn.ts` — `npx jev turn` (route + input guard, one call)
 - `docs/smart-home.md`

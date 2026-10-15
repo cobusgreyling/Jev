@@ -1,7 +1,12 @@
 #!/usr/bin/env python3
 """06 — Composite scoring: atomic signals, weights in code."""
 
-from jev_lab.policy import composite_score
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from jev_lab.policy import composite_score  # noqa: E402
 
 # Pretend three Nouls already came back from one fan-out call.
 SIGNALS = {

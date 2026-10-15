@@ -77,13 +77,14 @@ Tracked vendor claims sit in `data/claims.json` with nuance, not as slogans.
 Public repo. World-readable history.
 
 - `.env` gitignored; `.env.example` empty
-- Key may live in `~/.typesafe/api_key` (mode 600)
+- Key may live in `TYPESAFE_API_KEY`, `JEV_API_KEY`, `~/.config/typesafe/api_key`, or `~/.typesafe/api_key` (mode 600)
 - `/api/health` reports `live: true/false`, never the key
+- State is redacted before it is sent. Upstream errors are redacted before they are shown.
 - `scripts/secret_scan.py` + CI fail on `apikey_…`
 
 ## 7. Repro
 
-`pytest` for cost, policy, fixtures, secret scan. Docker for the lab. Makefile for demo / examples / test. Fixtures are JSON in `data/fixtures/` so the playground stays real when the key is absent.
+`make test`, `make lint`, `make examples`, and `make secret-scan`. Docker installs `requirements.lock`. Fixtures are JSON in `data/fixtures/` so the playground stays real when the key is absent. A live failure stays an error.
 
 ## 8. Pairing, not replacement
 

@@ -21,7 +21,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from jev_lab.client import TypeSafeError, load_api_key, system_one
+from jev_lab.client import DEFAULT_MODEL, TypeSafeError, load_api_key, system_one
 from jev_lab.cost import estimate_cost, fanout_comparison
 from jev_lab.home import (
     EXAMPLES,
@@ -40,13 +40,14 @@ from jev_lab.home import (
     trace_rows,
 )
 from jev_lab.policy import ticket_policy
+from jev_lab.redact import redact_string
 
 ROOT = Path(__file__).resolve().parent
 load_dotenv(ROOT / ".env")
 
 HOST = os.getenv("HOST", "127.0.0.1")
 PORT = int(os.getenv("PORT", "7872"))
-TYPESAFE_MODEL = os.getenv("TYPESAFE_MODEL", "jev-latest").strip() or "jev-latest"
+TYPESAFE_MODEL = os.getenv("TYPESAFE_MODEL", DEFAULT_MODEL).strip() or DEFAULT_MODEL
 TYPESAFE_BASE_URL = os.getenv("TYPESAFE_BASE_URL", "https://api.typesafe.ai").rstrip("/")
 VERSION = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
 
@@ -193,6 +194,15 @@ class JudgeRequest(BaseModel):
     model: str | None = None
 
 
+def _live_failure(exc: TypeSafeError) -> HTTPException:
+    """Surface a live failure. Never substitute a mock decision for it."""
+    detail = redact_string(exc.body)[:400]
+    return HTTPException(
+        status_code=exc.status_code,
+        detail=f"Live judge failed ({exc.status_code}): {detail}",
+    )
+
+
 @app.post("/api/judge")
 def judge(req: JudgeRequest) -> dict[str, Any]:
     if not load_api_key():
@@ -210,7 +220,7 @@ def judge(req: JudgeRequest) -> dict[str, Any]:
             base_url=TYPESAFE_BASE_URL,
         )
     except TypeSafeError as exc:
-        raise HTTPException(exc.status_code, exc.body) from exc
+        raise _live_failure(exc) from exc
     latency_ms = round((time.perf_counter() - t0) * 1000)
     answers = data.get("answers") or {}
     return {
@@ -276,13 +286,12 @@ def home_run(req: HomeRun) -> dict[str, Any]:
                 model=TYPESAFE_MODEL,
                 base_url=TYPESAFE_BASE_URL,
             )
-            answers = data.get("answers") or {}
-            source = "live"
-            model = data.get("model") or TYPESAFE_MODEL
-            usage = data.get("usage") or {}
-        except TypeSafeError:
-            answers = mock_answers(req.request, home, req.speaking_to, questions)
-            source = "mock_fallback"
+        except TypeSafeError as exc:
+            raise _live_failure(exc) from exc
+        answers = data.get("answers") or {}
+        source = "live"
+        model = data.get("model") or TYPESAFE_MODEL
+        usage = data.get("usage") or {}
     else:
         answers = mock_answers(req.request, home, req.speaking_to, questions)
     latency_ms = round((time.perf_counter() - t0) * 1000)
